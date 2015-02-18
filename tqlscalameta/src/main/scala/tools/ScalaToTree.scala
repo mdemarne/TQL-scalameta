@@ -11,9 +11,11 @@ import scala.reflect.runtime.{universe => ru}
 import scala.tools.reflect.{ToolBox, ToolBoxError}
 import scala.compat.Platform.EOL
 import scala.meta.internal.hosts.scalac.Scalahost
+import scala.meta.internal.hosts.scalac._
+
 //import scala.meta.semantic.{Host => PalladiumHost}
 //import scala.meta.internal.hosts.scalac.{Host => OurHost}
-import scala.meta.internal.hosts.scalac.{Scalahost  => OurHost}
+//import scala.meta.internal.hosts.scalac.{Scalahost  => OurHost}
 
 /*
 * Lame attempt to make available the scala compiler to the user, to make use of scala and scala.meta Trees
@@ -86,7 +88,7 @@ object ScalaToTree {
     def scalaToMeta(tree: compiler.Tree) = {
       import scala.meta.internal.ast._
       implicit val c = Scalahost.mkSemanticContext[compiler.type](compiler)
-      c.toScalameta(tree, classOf[Source])
+      c.toPtree(tree, classOf[Source])
     }
 
     def parseToMeta(code: String) = scalaToMeta(parseAndType(code))

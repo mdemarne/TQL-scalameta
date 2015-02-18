@@ -3,7 +3,7 @@ import Keys._
 
 object BuildSettings {
 
-  lazy val metaVersion = "0.0.0-M0"
+  lazy val metaVersion = "0.1.0-SNAPSHOT"
 
   val buildSettings = Seq(
     version := "0.1-SNAPSHOT",

@@ -57,9 +57,9 @@ class TraverserMacros(val c: Context) extends AdtReflection {
   }
 
   def buildCase[T : c.WeakTypeTag](leaf: Leaf, methodName: TermName): Option[c.Tree] = {
-    val listOfTraverseStats = leaf.nontriviaFields.flatMap(makeTraverseStat[T](_, methodName))
+    val listOfTraverseStats = leaf.fields.flatMap(makeTraverseStat[T](_, methodName))
     if (listOfTraverseStats.size > 0) {
-      val listOfParamNames = leaf.nontriviaFields.map(p => pq"${p.name} @ _")
+      val listOfParamNames = leaf.fields.map(p => pq"${p.name} @ _")
       Some(cq"${leaf.sym.companion}(..$listOfParamNames) => ..$listOfTraverseStats")
     }
     else

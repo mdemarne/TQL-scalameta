@@ -83,10 +83,10 @@ class TransformerMacros(override val c: Context) extends TraverserMacros(c) {
     *   if ((a1 eq scrut) && (a2 eq cases)) origin else Term.Match(a1, a2)
    * */
   def buildCase2[T : c.WeakTypeTag](leaf: Leaf, methodName: TermName): Option[c.Tree] = {
-    val listOfTransforms = leaf.nontriviaFields.map(makeTransformStat[T](_, methodName))
+    val listOfTransforms = leaf.fields.map(makeTransformStat[T](_, methodName))
     val listOfTransfromWithStats = listOfTransforms.filter(!_.stat.isEmpty)
     if (listOfTransfromWithStats.size > 0) {
-      val listOfParamNames = leaf.nontriviaFields.map(p => pq"${p.name} @ _")
+      val listOfParamNames = leaf.fields.map(p => pq"${p.name} @ _")
       val origin = TermName(c.freshName("origin"))
       val pat = pq"$origin @ ${leaf.sym.companion}(..$listOfParamNames)"
       val isEqual = listOfTransfromWithStats.foldLeft[c.Tree](q"true")((acc, c) => q"$acc && (${c.newName} eq ${c.oldName})")

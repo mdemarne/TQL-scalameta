@@ -47,7 +47,7 @@ class ScalametaTraverserBuilder(override val c: Context)
 
   //trick to make it work with the Name unapply.
   override def getParamsWithTypes(typ: c.Type): Option[(List[TermName], List[c.Type])] = {
-    val fields = typ.companion.typeSymbol.asLeaf.nontriviaFields
+    val fields = typ.companion.typeSymbol.asLeaf.fields
     if (!fields.isEmpty){
       Some(fields.map(x => (TermName(c.freshName), x.tpe) ).unzip)
     }

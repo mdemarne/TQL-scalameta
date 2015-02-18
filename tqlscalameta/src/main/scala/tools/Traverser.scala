@@ -52,10 +52,10 @@ class Traverser extends TraverserTableTag {
   override def traverse(tree: scala.meta.Tree) = tree match {
     case _: Term.Name | _ : Lit.Char | _ : Lit.Int | _ : Type.Name | _: Term.Param | _: Type.Apply =>
     case _ : Pat.Wildcard =>
-    case Case(pat, conds, stats) =>
+    case Case(pat, conds, block) =>
       traverse(pat)
       conds.foreach(traverseTerm(_))
-      stats.foreach(traverse(_))
+      block.stats.foreach(traverse(_))
     case Pat.Extract(ref, targs, elements) =>
       traverseTerm(ref)
       targs.foreach(traverse(_))
