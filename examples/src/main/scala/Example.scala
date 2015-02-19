@@ -14,7 +14,8 @@ import scala.meta.dialects.Scala211
 object Example extends App {
 
 
-  val x =
+  val x = {
+    import scala.meta._
     q"""
        val a = 5
        val c = 3
@@ -28,8 +29,10 @@ object Example extends App {
        else 2
        5
        """
+  }
 
-  val tree =
+  val tree = {
+    import scala.meta._
     q"""
        val a = 5
        val c = 3
@@ -40,6 +43,7 @@ object Example extends App {
        else 2
        5
        """
+  }
 
   val getAllVals = (collect[Set]{case x: Defn.Val => x.pats.head.toString}).topDown
 
