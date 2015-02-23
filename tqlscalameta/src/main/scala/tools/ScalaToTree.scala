@@ -37,7 +37,7 @@ object ScalaToTree {
     /*Awesomely awful. If you know how to have early initialization with anonymous class please tell me
     * Please have mercy on me
     * */
-    def init: Unit ={
+    def init: Unit = {
       m_frontEnd = tb.getClass.getDeclaredMethod("frontEnd")
       frontEnd = m_frontEnd.invoke(tb).asInstanceOf[scala.tools.reflect.FrontEnd]
     }
@@ -88,7 +88,7 @@ object ScalaToTree {
     def scalaToMeta(tree: compiler.Tree) = {
       import scala.meta.internal.ast._
       implicit val c = Scalahost.mkSemanticContext[compiler.type](compiler)
-      c.toPtree(tree, classOf[Source])
+      c.toMtree(tree, classOf[Source])
     }
 
     def parseToMeta(code: String) = scalaToMeta(parseAndType(code))

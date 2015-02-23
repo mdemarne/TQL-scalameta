@@ -24,7 +24,7 @@ object TraverserTableTag {
   def buildTraverseTable: Array[(Tree, Tree => Unit) => Unit] = TraverserBuilder.buildTraverseTable[Tree]
 }
 
-/*Change the order of the pattern mathc, as in the scalac traverser*/
+/*Change the order of the pattern mathch, as in the scalac traverser*/
 class Traverser extends TraverserTableTag {
   import scala.meta.internal.ast._
 

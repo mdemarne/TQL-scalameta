@@ -24,7 +24,7 @@ class TraverserMacros(val c: Context) extends AdtReflection {
     val Ttpe = implicitly[c.WeakTypeTag[T]]
     val nbLeaves = u.symbolOf[T].asRoot.allLeafs.size * 2
     val array = TermName(c.freshName("table"))
-    val tagTerm = TermName("$tag")
+    val tagTerm = TermName("internalTag")
     val assigns: List[c.Tree] = u.symbolOf[T].asRoot.allLeafs.map(x =>
       q"""
         $array(${x.sym.companion}.$tagTerm) = ${buildFuncForCase[T](x)}
