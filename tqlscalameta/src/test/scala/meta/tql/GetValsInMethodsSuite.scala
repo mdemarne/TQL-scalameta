@@ -21,13 +21,13 @@ class GetValsInMethodsSuite extends FunSuite {
 
   val getVals: Matcher[(List[String], Map[String, List[String]])] = {
     tupledUntil(
-      collect{case Defn.Val(_, (b: Term.Name):: Nil,_, _) => b.name.toString},
-      focus{case _: Defn.Procedure => true} feed { defn =>
+      collect{case Defn.Val(_, (b: Term.Name):: Nil,_, _) => b.value.toString},
+      focus{case _: Defn.Def => true} feed { defn =>
         getVals.children.map(x => Map(defn.name.toString -> x._1) ++ x._2)
       }
     )
   }
-  val getValsInMethods = (focus{case _: Defn.Procedure => true} andThen getVals).topDownBreak.map(_._2)
+  val getValsInMethods = (focus{case _: Defn.Def => true} andThen getVals).topDownBreak.map(_._2)
 
 
   def getValsInMethodsTraverser(tree: scala.meta.Tree) = {
@@ -39,7 +39,7 @@ class GetValsInMethodsSuite extends FunSuite {
       import scala.meta.internal.ast._
       override def traverse(tree: scala.meta.Tree): Unit = {
         tree match {
-          case f: Defn.Procedure =>
+          case f: Defn.Def =>
             val oldFunc = currentFunc
             currentFunc = f.name
             super.traverse(tree)
@@ -47,7 +47,7 @@ class GetValsInMethodsSuite extends FunSuite {
           case Defn.Val(_, (b: Term.Name):: Nil,_, rhs)
             if currentFunc != null =>
             val content = funcsWithVals.getOrElse(currentFunc,Nil)
-            funcsWithVals += (currentFunc -> (b.name::content))
+            funcsWithVals += (currentFunc -> (b::content))
             super.traverse(tree)
           case _ => super.traverse(tree)
         }
@@ -57,16 +57,16 @@ class GetValsInMethodsSuite extends FunSuite {
   }
 
   val getValsInMethods2: Matcher[Map[String, List[String]]] =
-    (focus{case _: Defn.Procedure => true} feed { defn =>
+    (focus{case _: Defn.Def => true} feed { defn =>
       (until(
-        collect{case Defn.Val(_, (b: Term.Name):: Nil,_, _) => b.name.toString},
-        focus{case _: Defn.Procedure => true}
+        collect{case Defn.Val(_, (b: Term.Name):: Nil,_, _) => b.value.toString},
+        focus{case _: Defn.Def => true}
       ).map(x => Map(defn.name.toString -> x)) + getValsInMethods).children
     }).topDownBreak
 
   val getValsInMethods3 = fix[Map[String, List[String]]]{r =>
-    @@[Defn.Procedure] feed { defn =>
-      (r either collect{case Defn.Val(_, (b: Term.Name):: Nil,_, _) => b.name.toString})
+    @@[Defn.Def] feed { defn =>
+      (r either collect{case Defn.Val(_, (b: Term.Name):: Nil,_, _) => b.value.toString})
         .topDownBreak
         .children
         .map{case (m, x) => Map(defn.name.toString -> x) ++ m}
@@ -87,8 +87,8 @@ class GetValsInMethodsSuite extends FunSuite {
     between[A, B, Map[A, B]](m1, m2, (a: A, v: B) => Map(a -> v))
 
   val getValsInMethods4 = repsep(
-    visit{case f: Defn.Procedure => f.name.toString},
-    collect{case Defn.Val(_, (b: Term.Name):: Nil,_, _) => b.name.toString}
+    visit{case f: Defn.Def => f.name.toString},
+    collect{case Defn.Val(_, (b: Term.Name):: Nil,_, _) => b.value.toString}
   ).topDownBreak
 
 
@@ -103,8 +103,8 @@ class GetValsInMethodsSuite extends FunSuite {
   }
 
   val getValsInMethods5 = group(
-    visit{case f: Defn.Procedure => f.name.toString},
-    collect{case Defn.Val(_, (b: Term.Name):: Nil,_, _) => b.name.toString}
+    visit{case f: Defn.Def => f.name.toString},
+    collect{case Defn.Val(_, (b: Term.Name):: Nil,_, _) => b.value.toString}
   )
 
   

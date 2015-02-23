@@ -17,7 +17,7 @@ class TraverserTableTag{
 
   val myTable = TraverserTableTag.buildTraverseTable
 
-  def traverse(tree: Tree): Unit = myTable(tree.$tag)(tree, traverse _)
+  def traverse(tree: Tree): Unit = myTable(tree.internalTag)(tree, traverse _)
 }
 
 object TraverserTableTag {

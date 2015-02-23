@@ -14,7 +14,7 @@ class AllowedTransformationsMaterializer(val c: Context) extends org.scalameta.a
   import c.universe._
 
   def materialize[T : c.WeakTypeTag, I : c.WeakTypeTag, O : c.WeakTypeTag]: c.Expr[tql.AllowedTransformation[I, O]] = {
-    val brlhs = getBranch[I].filterNot(_.sym.fullName == u.symbolOf[T].fullName)
+    val brlhs = getBranch[I].filterNot(_.fullName == u.symbolOf[T].fullName)
     val Tout = u.symbolOf[O].asType
     //c.abort(c.enclosingPosition, show(Tout) + " : " + show(brlhs.filter(x => Tout.toType <:< x.info.typeSymbol.asType.toType)))
 
@@ -25,9 +25,8 @@ class AllowedTransformationsMaterializer(val c: Context) extends org.scalameta.a
         "impossible to materialize AllowedTransformations[" +
           show(implicitly[c.WeakTypeTag[I]].tpe) + ", " +
           show(implicitly[c.WeakTypeTag[O]].tpe) + "]" + "\n" +
-          "because " + show(Tout.sym.fullName) + " is not a subtype of any in " + show(brlhs) + "\n")
+          "because " + show(Tout.fullName) + " is not a subtype of any in " + show(brlhs) + "\n")
   }
-
 
   private def getBranch[A : c.WeakTypeTag]: List[TypeSymbol] = {
     val Asym = u.symbolOf[A]

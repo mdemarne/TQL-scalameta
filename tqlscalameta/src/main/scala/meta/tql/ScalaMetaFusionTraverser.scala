@@ -36,6 +36,6 @@ object ScalaMetaFusionTraverser extends Traverser[Tree]
       scala.meta.internal.ast.Term.ApplyInfix
     )
 
-  def TtoU(t: Tree): Int = t.$tag
+  def TtoU(t: Tree): Int = t.internalTag
   def optimize[A](m: Matcher[A]): Matcher[A] = macro ScalametaFusionTraverserHelperMacros.getAllTags
 }

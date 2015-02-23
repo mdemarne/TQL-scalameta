@@ -20,7 +20,7 @@ class ForbidVarsInMethodsSuite extends FunSuite {
   //tql traverser
   val forbidVarsInMethods = {
     def checkMethod: Matcher[List[String]] =
-      focus{ case _: Defn.Procedure => true} feed { method =>
+      focus{ case _: Defn.Def => true} feed { method =>
 
         val warn = collect{
           case Defn.Var(_, (b: Term.Name):: Nil,_, _) =>
@@ -41,14 +41,14 @@ class ForbidVarsInMethodsSuite extends FunSuite {
     var currentMethod: Term.Name = null
     new Traverser {
       override def traverse(tree:  scala.meta.Tree): Unit = tree match {
-        case f: Defn.Procedure =>
+        case f: Defn.Def =>
           val oldFunc = currentMethod
           currentMethod = f.name
           super.traverse(tree)
           currentMethod = oldFunc
         case Defn.Var(_, (b: Term.Name):: Nil,_, _)
           if currentMethod != null =>
-          val newWarning = b + " should not be used in " + currentMethod.name
+          val newWarning = b + " should not be used in " + currentMethod.value
           warnings = newWarning :: warnings
           super.traverse(tree)
         case _ =>

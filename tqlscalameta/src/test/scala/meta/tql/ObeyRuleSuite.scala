@@ -21,19 +21,15 @@ class ObeyRuleSuite extends FunSuite {
 
   val propaganda = ScalaToTree.load(System.getProperty("user.dir") + "/tqlscalameta/src/test/resources/Propaganda.scala")
 
-
   //rule taken from the Obey project
   val listToSetBool = topDown(transform {
     case tt @ Term.Apply(t@Term.Select(Term.Apply(Term.Name("List"), _), Term.Name("toSet")), _) =>
       t andCollect tt.toString
   })
-
-
   test("listToSetBool") {
-      val res = listToSetBool(propaganda)
-      val newCode = res.tree.get
-      assert(newCode != propaganda)
+    val res = listToSetBool(propaganda)
+    val newCode = res.tree.get
+    assert(newCode != propaganda)
   }
-
-
+  
 }
