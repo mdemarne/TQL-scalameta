@@ -50,7 +50,7 @@ class ScalametaFusionTraverserHelperMacros(override val c: Context)
   }
 
   private def getTagsFromTypes(tpes: Set[c.Type]): Set[c.Tree] = {
-    val tagTerm = TermName("$tag")
+    val tagTerm = TermName("internalTag")
     tpes.flatMap{_ match {
         case tpe if tpe.typeSymbol.isLeaf => Set(q"${tpe.typeSymbol.companion}.$tagTerm")
         case tpe if tpe.typeSymbol.isBranch =>
