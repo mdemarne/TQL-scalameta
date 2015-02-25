@@ -6,7 +6,7 @@ object BuildSettings {
   lazy val metaVersion = "0.1.0-SNAPSHOT"
 
   val buildSettings = Seq(
-    version := "0.1.1-SNAPSHOT",
+    version := metaVersion,
     scalacOptions ++= Seq("-optimize", "-feature", /*"-Yinline-warnings",*/ "-deprecation"),
     //javaOptions := Seq("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5140"),
     scalaVersion := "2.11.5",
