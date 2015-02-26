@@ -23,7 +23,9 @@ object OptimizeBenchmarks extends PerformanceTest{
   val range = Gen.enumeration("size")(100)
 
   val compiler: CompilerProxy = ScalaToTree.loadCompiler
-  val scalaTree = compiler.parseAndType(ScalaToTree.loadSource(System.getProperty("user.dir") + "/tqlscalameta/src/test/resources/Huffman.scala"))
+  // TODO: change to use FusionBenchmarks.scala, but the file cannot be put in git. Using GenSeqLike.scala by default.
+  // val scalaTree = compiler.parseAndType(ScalaToTree.loadSource(System.getProperty("user.dir") + "/tqlscalameta/src/test/resources/Huffman.scala"))
+  val scalaTree = compiler.parseAndType(ScalaToTree.loadSource(System.getProperty("user.dir") + "/tqlscalameta/src/test/resources/GenSeqLike.scala"))
 
   val scalaMetaTree:scala.meta.Tree = compiler.scalaToMeta(scalaTree)
 
