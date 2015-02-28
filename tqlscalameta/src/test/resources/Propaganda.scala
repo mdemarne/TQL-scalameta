@@ -20,6 +20,6 @@ object Propaganda {
     }
 
     var c = 3
-    val v = List(1,2,3).toSet()
+    val v = List(1,2,3).toSet(())
   }
 }

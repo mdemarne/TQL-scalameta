@@ -4,7 +4,8 @@ import org.scalatest.FunSuite
 import tools.ScalaToTree.CompilerProxy
 import tools.{ScalaToTree, Traverser}
 
-import scala.meta.internal.ast.{Term, Defn}
+
+import scala.meta.internal.ast.{Term, Defn, Pat}
 import scala.meta.tql.ScalaMetaTraverser._
 import tql.MonoidEnhencer._
 
@@ -21,7 +22,7 @@ class GetValsInMethodsSuite extends FunSuite {
 
   val getVals: Matcher[(List[String], Map[String, List[String]])] = {
     tupledUntil(
-      collect{case Defn.Val(_, (b: Term.Name):: Nil,_, _) => b.value.toString},
+      collect{case Defn.Val(_, Pat.Var.Term(b: Term.Name):: Nil,_, _) => b.value.toString},
       focus{case _: Defn.Def => true} feed { defn =>
         getVals.children.map(x => Map(defn.name.toString -> x._1) ++ x._2)
       }
@@ -59,14 +60,14 @@ class GetValsInMethodsSuite extends FunSuite {
   val getValsInMethods2: Matcher[Map[String, List[String]]] =
     (focus{case _: Defn.Def => true} feed { defn =>
       (until(
-        collect{case Defn.Val(_, (b: Term.Name):: Nil,_, _) => b.value.toString},
+        collect{case Defn.Val(_, Pat.Var.Term(b: Term.Name):: Nil,_, _) => b.value.toString},
         focus{case _: Defn.Def => true}
       ).map(x => Map(defn.name.toString -> x)) + getValsInMethods).children
     }).topDownBreak
 
   val getValsInMethods3 = fix[Map[String, List[String]]]{r =>
     @@[Defn.Def] feed { defn =>
-      (r either collect{case Defn.Val(_, (b: Term.Name):: Nil,_, _) => b.value.toString})
+      (r either collect{case Defn.Val(_, Pat.Var.Term(b: Term.Name):: Nil,_, _) => b.value.toString})
         .topDownBreak
         .children
         .map{case (m, x) => Map(defn.name.toString -> x) ++ m}
@@ -88,7 +89,7 @@ class GetValsInMethodsSuite extends FunSuite {
 
   val getValsInMethods4 = repsep(
     visit{case f: Defn.Def => f.name.toString},
-    collect{case Defn.Val(_, (b: Term.Name):: Nil,_, _) => b.value.toString}
+    collect{case Defn.Val(_, Pat.Var.Term(b: Term.Name):: Nil,_, _) => b.value.toString}
   ).topDownBreak
 
 
@@ -104,10 +105,10 @@ class GetValsInMethodsSuite extends FunSuite {
 
   val getValsInMethods5 = group(
     visit{case f: Defn.Def => f.name.toString},
-    collect{case Defn.Val(_, (b: Term.Name):: Nil,_, _) => b.value.toString}
+    collect{case Defn.Val(_, Pat.Var.Term(b: Term.Name):: Nil,_, _) => b.value.toString}
   )
 
-  
+
 
   test("getValsInMethods scala.reflect") {
     val res = getValsInMethods(propaganda).result
