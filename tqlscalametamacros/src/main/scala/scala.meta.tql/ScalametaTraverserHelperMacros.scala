@@ -20,7 +20,9 @@ class ScalametaTraverserBuilder(override val c: Context)
                     extends _root_.tql.TraverserBuilder(c)
                     with org.scalameta.adt.AdtReflection {
   val u: c.universe.type = c.universe
+  val mirror: u.Mirror = c.mirror
   import c.universe._
+  val XtensionQuasiquoteTerm = "shadow scala.meta quasiquotes"
 
   def getAllLeaves(root: Root) = root.allLeafs
 

@@ -16,7 +16,9 @@ object TraverserBuilder {
 
 class TraverserMacros(val c: Context) extends AdtReflection {
   val u: c.universe.type = c.universe
-	import c.universe._
+  val mirror: u.Mirror = c.mirror
+  import c.universe._
+  val XtensionQuasiquoteTerm = "shadow scala.meta quasiquotes"
 
   def buildTraverseTable[T : c.WeakTypeTag]: c.Tree = {
     u.symbolOf[T].asRoot.allLeafs.foreach(_.sym.owner.info)
@@ -52,6 +54,7 @@ class TraverserMacros(val c: Context) extends AdtReflection {
     case t if t <:< weakTypeOf[T]           => Some(q"$methodName(${field.name})")
     case t if t <:< weakTypeOf[Seq[T]]      => Some(q"${field.name}.foreach($methodName(_))")
     case t if t <:< weakTypeOf[Seq[Seq[T]]] => Some(q"${field.name}.foreach(_.foreach($methodName(_)))")
+    case t if t <:< weakTypeOf[Option[Seq[T]]] => Some(q"${field.name}.foreach(_.foreach($methodName(_)))")
     case t if t <:< weakTypeOf[Option[T]]   => Some(q"${field.name}.foreach($methodName(_))")
     case _ => None
   }

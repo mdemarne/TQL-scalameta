@@ -13,7 +13,9 @@ class ScalametaFusionTraverserHelperMacros(override val c: Context)
   extends TraverserBuilder(c)
   with org.scalameta.adt.AdtReflection {
   val u: c.universe.type = c.universe
+  val mirror: u.Mirror = c.mirror
   import c.universe._
+  val XtensionQuasiquoteTerm = "shadow scala.meta quasiquotes"
 
   private def extractTypesFromPatten(pat: c.Tree): List[c.Type] = pat match {
     case pq"${first: c.Tree} | ..${rest: List[c.Tree]}" => first.tpe :: rest.map(_.tpe)

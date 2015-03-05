@@ -34,6 +34,16 @@ abstract class TransformerBuilder[T] {
     if (!isModified) elem else newSeq
   }
 
+  protected def mapConserveOptionSeq[U <: AnyRef](elem: Option[Seq[U]], f: U => U) = {
+    var isModified = false
+    val newOptionSeq = elem map { lst =>
+      val newLst = mapConserve(lst, f)
+      isModified |= !(newLst eq lst)
+      newLst
+    }
+    if (!isModified) elem else newOptionSeq
+  }
+
   protected def flatMapConserve[U <: AnyRef](elem: Iterable[Iterable[U]], f: U => U) =
     mapConserve[Iterable[U]](elem, mapConserve[U](_, f))
 }
@@ -69,6 +79,8 @@ class TransformerMacros(override val c: Context) extends TraverserMacros(c) {
         Transformed(field.name, newName, Some(q"val $newName = mapConserve(${field.name}, $methodName).asInstanceOf[$t]"))
       case t if t <:< weakTypeOf[Seq[Seq[T]]] =>
         Transformed(field.name, newName, Some(q"val $newName = flatMapConserve(${field.name}, $methodName).asInstanceOf[$t]"))
+      case t if t <:< weakTypeOf[Option[Seq[T]]]   =>
+        Transformed(field.name, newName, Some(q"val $newName = mapConserveOptionSeq(${field.name}, $methodName).asInstanceOf[$t]"))
       case t if t <:< weakTypeOf[Option[T]]   =>
         Transformed(field.name, newName, Some(q"val $newName = mapConserveOption(${field.name}, $methodName).asInstanceOf[$t]"))  //TODO change to a mapConserve like stuff
       case _ => Transformed(field.name, field.name, None)

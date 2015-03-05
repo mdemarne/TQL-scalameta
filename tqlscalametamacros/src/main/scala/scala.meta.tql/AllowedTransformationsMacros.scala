@@ -11,7 +11,9 @@ import scala.reflect.macros.blackbox.Context
 
 class AllowedTransformationsMaterializer(val c: Context) extends org.scalameta.adt.AdtReflection{
   val u: c.universe.type = c.universe
+  val mirror: u.Mirror = c.mirror
   import c.universe._
+  val XtensionQuasiquoteTerm = "shadow scala.meta quasiquotes"
 
   def materialize[T : c.WeakTypeTag, I : c.WeakTypeTag, O : c.WeakTypeTag]: c.Expr[tql.AllowedTransformation[I, O]] = {
     val brlhs = getBranch[I].filterNot(_.fullName == u.symbolOf[T].fullName)
